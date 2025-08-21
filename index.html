@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="es" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spotify Clone</title>
+    <link rel="icon" href="Spotify_logo.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              app: {
+                bg: '#121212',
+                card: '#181818',
+                cardHover: '#282828',
+                text: '#e6e6e6',
+                mute: '#b3b3b3',
+                accent: '#1DB954'
+              }
+            },
+            boxShadow: { soft: '0 10px 25px rgba(0,0,0,0.35)' }
+          }
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <style>
+      /* Scrollbar minimal */
+      ::-webkit-scrollbar{height:10px;width:10px}
+      ::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:9999px}
+      ::-webkit-scrollbar-track{background:transparent}
+    </style>
+  </head>
+  <body class="h-full bg-app-bg text-app-text">
+    <div class="relative min-h-screen p-2 flex flex-col md:flex-row">
+      <!-- Sidebar responsive fijo a partir de md (25%) -->
+      <aside class="w-full md:w-[25%] md:fixed md:top-2 md:left-2 h-auto md:h-[calc(100vh-1rem)] overflow-visible md:overflow-y-auto bg-black/40 rounded-2xl p-3 flex flex-col gap-3">
+        <div class="flex items-center gap-3 px-3 py-2">
+          <div class="h-8 w-8 rounded-full">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/2048px-Spotify_logo_without_text.svg.png" alt="">
+          </div>
+          <span class="font-semibold tracking-wide">Spotify</span>
+        </div>
+        <nav class="bg-app-card rounded-xl p-2">
+          <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-app-cardHover transition" href="#">
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-home"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
+            Inicio
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-app-cardHover transition" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 104.146 12.038l3.783 3.783a.75.75 0 101.06-1.06l-3.783-3.783A6.75 6.75 0 0010.5 3.75zM6 10.5a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0z" clip-rule="evenodd"/></svg>
+            Buscar
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-app-cardHover transition" href="#">
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-books"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M9 4m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M5 8h4" /><path d="M9 16h4" /><path d="M13.803 4.56l2.184 -.53c.562 -.135 1.133 .19 1.282 .732l3.695 13.418a1.02 1.02 0 0 1 -.634 1.219l-.133 .041l-2.184 .53c-.562 .135 -1.133 -.19 -1.282 -.732l-3.695 -13.418a1.02 1.02 0 0 1 .634 -1.219l.133 -.041z" /><path d="M14 9l4 -1" /><path d="M16 16l3.923 -.98" /></svg>
+            Tu biblioteca
+          </a>
+        </nav>
+
+        <div class="bg-app-card rounded-xl p-3 flex-1 md:flex-initial md:h-auto">
+          <div class="flex items-center justify-between mb-2">
+  <h3 class="text-sm text-app-mute">Reciente</h3>
+  <button id="clearRecent" class="text-xs px-2 py-1 rounded-full bg-white/10 hover:bg-white/20">Limpiar</button>
+</div>
+<ul id="recentList" class="space-y-2">
+  <li class="text-xs text-app-mute">Aún no hay reproducciones.</li>
+</ul>
+        </div>
+
+        <div class="bg-app-card rounded-xl p-3">
+          <p class="text-xs text-app-mute">© 2025 — Matthew</p>
+        </div>
+      </aside>
+
+      <!-- Main: en móvil sin margen; en md+ deja espacio para el aside 25% -->
+      <main class="relative ml-0 md:ml-[calc(25%+0.5rem)] rounded-2xl bg-gradient-to-b from-[#0b2b34] via-[#0e1a1f] to-app-bg pb-28">
+        <!-- Topbar -->
+        <header class="sticky top-0 z-10 backdrop-blur bg-black/30 rounded-t-2xl">
+          <div class="flex items-center justify-between px-4 md:px-6 py-3">
+            <div class="flex items-center gap-2">
+              <button class="p-2 rounded-full bg-black/50 hover:bg-black">←</button>
+              <button class="p-2 rounded-full bg-black/50 hover:bg-black">→</button>
+            </div>
+            <div class="hidden md:flex items-center gap-2">
+              <button class="px-3 py-1.5 rounded-full bg-white text-black text-sm hover:scale-[1.02] transition">Descubre Premium</button>
+              <button class="px-3 py-1.5 rounded-full bg-black/50 hover:bg-black text-sm">Regístrate</button>
+              <button class="p-2 rounded-full bg-black/50 hover:bg-black" aria-label="Notificaciones">🔔</button>
+              <button class="px-3 py-1.5 rounded-full bg-black/50 hover:bg-black text-sm">M</button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <section class="p-4 md:p-6 space-y-8">
+          <!-- Quick tiles -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+            <a href="#" class="group flex items-center gap-4 bg-app-card hover:bg-app-cardHover transition rounded-xl p-3 shadow-soft"
+               data-spotify="559YUIWxUc8Mx4lsla13Ff">
+              <img class="w-16 h-16 rounded object-cover" data-cover alt="cover"/>
+              <div>
+                <p class="font-medium" data-title></p>
+                <p class="text-xs text-app-mute" data-kind></p>
+              </div>
+            </a>
+            <a href="#" class="group flex items-center gap-4 bg-app-card hover:bg-app-cardHover transition rounded-xl p-3 shadow-soft"
+               data-spotify="6habFhsOp2NvshLv26DqMb">
+              <img class="w-16 h-16 rounded object-cover" data-cover/>
+              <div>
+                <p class="font-medium" data-title></p>
+                <p class="text-xs text-app-mute" data-kind></p>
+              </div>
+            </a>
+            <a href="#" class="group flex items-center gap-4 bg-app-card hover:bg-app-cardHover transition rounded-xl p-3 shadow-soft"
+               data-spotify="1IHWl5LamUGEuP4ozKQSXZ">
+              <img class="w-16 h-16 rounded object-cover" data-cover />
+              <div>
+                <p class="font-medium" data-title></p>
+                <p class="text-xs text-app-mute" data-kind></p>
+              </div>
+            </a>
+            <a href="#" class="group flex items-center gap-4 bg-app-card hover:bg-app-cardHover transition rounded-xl p-3 shadow-soft"
+               data-spotify="20pJKlNIU3J1CrvhBr1kQ8">
+              <img class="w-16 h-16 rounded object-cover" data-cover/>
+              <div>
+                <p class="font-medium" data-title></p>
+                <p class="text-xs text-app-mute" data-kind></p>
+              </div>
+            </a>
+            <a href="#" class="group flex items-center gap-4 bg-app-card hover:bg-app-cardHover transition rounded-xl p-3 shadow-soft"
+               data-spotify="7ndTONDDRFGiPnnhOzOXxq">
+              <img class="w-16 h-16 rounded object-cover" data-cover />
+              <div>
+                <p class="font-medium" data-title></p>
+                <p class="text-xs text-app-mute" data-kind></p>
+              </div>
+            </a>
+            <a href="#" class="group flex items-center gap-4 bg-app-card hover:bg-app-cardHover transition rounded-xl p-3 shadow-soft"
+               data-spotify="3XHEiGYKv62u9Xh9w84o63">
+              <img class="w-16 h-16 rounded object-cover" data-cover />
+              <div>
+                <p class="font-medium" data-title></p>
+                <p class="text-xs text-app-mute" data-kind></p>
+              </div>
+            </a>
+          </div>
+
+          <!-- For You -->
+          <div class="space-y-4">
+            <h2 class="text-2xl font-bold">Recomendado Para hoy</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="6rXvMpWJbTyhSrVWye7jPE">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+
+              </article>
+
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="5fxnoiUBJ5DMAQEYb2uFOr">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="43PXER25C9JkExLBd5dObG">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="5bi0gh89wRuH2OgjdAKFsb">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="0TUW9faHNaBmi89wsYGp9y">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="7lv29kdxcbbXXvvUgWKdug">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+            </div>
+          </div>
+
+
+          <!-- Artistas Recomendados -->
+          <div class="space-y-4">
+            <h2 class="text-2xl font-bold">Artistas Recomendados</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6">
+
+              <div class="flex flex-col items-center text-center cursor-pointer" data-spotify="59D4DOkspUbWyMmbAPQkxZ">
+                <img class="w-32 h-32 rounded-full object-cover shadow-soft" src="https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8439c84f448e45766227820588" alt="Lana Del Rey"/>
+                <p class="mt-2 font-medium">Bad Bunny</p>
+                <p class="text-xs text-app-mute">Artista</p>
+              </div>
+
+              <div class="flex flex-col items-center text-center cursor-pointer" data-spotify="2mnXxnrX5vCGolNkaFvVeM">
+                <img class="w-32 h-32 rounded-full object-cover shadow-soft" src="https://i0.wp.com/es.rollingstone.com/wp-content/uploads/2023/02/Arcangel-el-respeto-vale-mas-que-el-dinero-3.jpg?resize=800%2C1200&ssl=1" alt="Arcangel"/>
+                <p class="mt-2 font-medium">Arcangel</p>
+                <p class="text-xs text-app-mute">Artista</p>
+              </div>
+              <div class="flex flex-col items-center text-center cursor-pointer" data-spotify="6TGwxVbZHpRNZmMW43SRLS">
+                <img class="w-32 h-32 rounded-full object-cover shadow-soft" src="https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da847f3ad7f2c3061362d28ba590" alt="Bad Bunny"/>
+                <p class="mt-2 font-medium">Ozuna</p>
+                <p class="text-xs text-app-mute">Artista</p>
+              </div>
+              <div class="flex flex-col items-center text-center cursor-pointer" data-spotify="2qG5sZ7Si6sdK74qLxedYM">
+                <img class="w-32 h-32 rounded-full object-cover shadow-soft" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/2023-11-16_Gala_de_los_Latin_Grammy%2C_27_%28cropped%29.jpg" alt="Shakira"/>
+                <p class="mt-2 font-medium">Rosalia</p>
+                <p class="text-xs text-app-mute">Artista</p>
+              </div>
+              <div class="flex flex-col items-center text-center cursor-pointer" data-spotify="6ipzb1kHhWIxp1tS0vwqPl">
+                <img class="w-32 h-32 rounded-full object-cover shadow-soft" src="https://files.lamega.com.rcnra-dev.com/assets/public/styles/1200x1200_amp/public/media/image/image/2022-09/Feid.jpg?VersionId=l9DFr4Cg_sP4DfqGtUHDxqmEuz50tZDl&h=e5cc859d&itok=jczRDZfy" alt="Billie Eilish"/>
+                <p class="mt-2 font-medium">Fercho</p>
+                <p class="text-xs text-app-mute">Artista</p>
+              </div>
+              <div class="flex flex-col items-center text-center cursor-pointer" data-spotify="6rZno3nqeT7hv2PnSWRuYS">
+                <img class="w-32 h-32 rounded-full object-cover shadow-soft" src="https://i.scdn.co/image/ab67616100005174d50e3f663f6940344b50787a" alt="The Weeknd"/>
+                <p class="mt-2 font-medium">blessd</p>
+                <p class="text-xs text-app-mute">Artista</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Podría Gustarte (ejemplo con oEmbed: data-cover/data-title) -->
+          <div class="space-y-4">
+            <h2 class="text-2xl font-bold">Podria Gustarte...</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="10vfOPjMNnhqKhqYz3GoxH">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="6fL2wAZuNKGpze9E3SINnW">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="1QWj9NYh8ZcSugtyBhSIea">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="4gBkrpJoPBZKY0T1gyJ4iU">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="3Af5c7v03LqQD6pumWieqd">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+              <article class="bg-app-card group hover:bg-app-cardHover transition rounded-xl p-3 cursor-pointer" data-spotify="4vEHTE0TocuaKZqiSq0UIS">
+                <div class="relative">
+                  <img class="w-full h-40 object-cover rounded-lg" data-cover alt="mix"/>
+                  <button class="hidden group-hover:flex items-center justify-center absolute w-10 h-10 bottom-2 right-2 p-3 rounded-full bg-app-accent text-black font-bold shadow-soft hover:scale-105 transition">▶︎</button>
+                </div>
+                <h3 class="mt-3 font-semibold" data-title>—</h3>
+                <p class="text-xs text-app-mute" data-kind>—</p>
+              </article>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <footer class="mt-10 border-t border-white/10 pt-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
+              <div>
+                <h3 class="text-base font-semibold mb-4">Empresa</h3>
+                <ul class="space-y-2 text-app-mute">
+                  <li><a href="#" class="hover:underline">Acerca de</a></li>
+                  <li><a href="#" class="hover:underline">Empleo</a></li>
+                  <li><a href="#" class="hover:underline">For the Record</a></li>
+                </ul>
+              </div>
+              <div>
+                <h3 class="text-base font-semibold mb-4">Comunidades</h3>
+                <ul class="space-y-2 text-app-mute">
+                  <li><a href="#" class="hover:underline">Para artistas</a></li>
+                  <li><a href="#" class="hover:underline">Desarrolladores</a></li>
+                  <li><a href="#" class="hover:underline">Publicidad</a></li>
+                  <li><a href="#" class="hover:underline">Inversores</a></li>
+                  <li><a href="#" class="hover:underline">Proveedores</a></li>
+                </ul>
+              </div>
+              <div>
+                <h3 class="text-base font-semibold mb-4">Enlaces útiles</h3>
+                <ul class="space-y-2 text-app-mute">
+                  <li><a href="#" class="hover:underline">Asistencia</a></li>
+                  <li><a href="#" class="hover:underline">App gratis para móvil</a></li>
+                </ul>
+              </div>
+              <div>
+                <h3 class="text-base font-semibold mb-4">Planes de Spotify</h3>
+                <ul class="space-y-2 text-app-mute">
+                  <li><a href="#" class="hover:underline">Premium Individual</a></li>
+                  <li><a href="#" class="hover:underline">Premium Duo</a></li>
+                  <li><a href="#" class="hover:underline">Premium Familiar</a></li>
+                  <li><a href="#" class="hover:underline">Premium para Estudiantes</a></li>
+                  <li><a href="#" class="hover:underline">Spotify Free</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mt-10 text-sm text-app-mute">
+              <p>2024 Spotify AB</p>
+            </div>
+          </footer>
+        </section>
+
+        <!-- PLAYER: barra fija tipo Spotify -->
+        <div id="playerBar" class="fixed bottom-0 left-0 right-0 z-[9999] hidden">
+          <div class="w-full border-top border-white/10 bg-[#121212]/95 backdrop-blur">
+            <div class="mx-auto max-w-[1600px]">
+              <div class="relative h-[92px] md:h-[100px]">
+                <button id="closePlayer"
+                        class="absolute right-2 top-2 z-10 text-xs px-2 py-1 rounded-full bg-white/10 hover:bg-white/20">
+                  ✕
+                </button>
+                <iframe id="spotifyFrame"
+                        class="absolute inset-0 w-full h-full"
+                        style="border:0;"
+                        loading="lazy"
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        src="">
+                </iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
